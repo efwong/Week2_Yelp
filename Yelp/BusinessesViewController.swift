@@ -15,9 +15,15 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var tableView: UITableView!
 
     
+    @IBOutlet weak var filterButton: UIBarButtonItem!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        // set filter button color
+        filterButton.customView?.layer.borderColor = UIColor.white.cgColor
+        filterButton.customView?.layer.borderWidth = 1.0
         
+        //self.navigationController?.navigationBar.barTintColor = UIColor.red
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension

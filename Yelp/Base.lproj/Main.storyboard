@@ -119,12 +119,14 @@
                     </view>
                     <navigationItem key="navigationItem" title="Yelp" id="hdc-4n-Ec2">
                         <barButtonItem key="leftBarButtonItem" title="Filters" id="ASx-VK-TzM">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <segue destination="bBA-Kr-4rS" kind="presentation" identifier="segueToFiltersModal" id="XRu-6u-wSe"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="filterButton" destination="ASx-VK-TzM" id="Nbf-7e-Q7A"/>
                         <outlet property="tableView" destination="1YL-kR-nEg" id="We7-nN-1nr"/>
                     </connections>
                 </viewController>
