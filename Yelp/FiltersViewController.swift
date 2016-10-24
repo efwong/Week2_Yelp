@@ -17,13 +17,28 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
     @IBOutlet weak var tableView: UITableView!
     
     weak var delegate:FiltersViewControllerDelegate?
+    var prevSettings:SearchFilterSettings?
+    
+    let tableStructure : [[Int]] = [[0],[0,1,2,3,4], [0,1,2]]
+    
+    // section indexes
+    let distanceSectionIndex = 1
+    let sortBySectionIndex = 2
+    let categorySectionIndex = 3
+    
+    // store type of sections
+    let sectionType = [FilterType.deals, FilterType.distance, FilterType.sortBy, FilterType.category]
     
     var categories:[[String:String]]!
+    var distanceFilter: FiltersDistanceEnum?
+    var sortByFilter: FiltersSortEnum?
+    var hasDeals:Bool = false
     
-    var switchStates = [Int:Bool]()
+    var switchStates = [Int:[Int:Bool]]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        initializeSwitchStates()
         
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -31,6 +46,7 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         categories = yelpCategories()
         // Do any additional setup after loading the view.
+        loadPrevSettings()
     }
 
     override func didReceiveMemoryWarning() {
@@ -42,36 +58,102 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
         dismiss(animated: true, completion: nil)
     }
     
+    // reset values to default state
+    @IBAction func onClearButton(_ sender: AnyObject) {
+        initializeSwitchStates()
+        distanceFilter = FiltersDistanceEnum.auto
+        sortByFilter = FiltersSortEnum.bestMatch
+        self.switchStates[distanceSectionIndex]?[FiltersDistanceEnum.auto.rawValue] = true
+        self.switchStates[sortBySectionIndex]?[FiltersSortEnum.bestMatch.rawValue] = true
+        hasDeals = false
+        self.tableView.reloadData()
+    }
+    
     @IBAction func onSearchButton(_ sender: AnyObject) {
         var filters = [String: AnyObject]()
         
         // get selected categories coded string
         var selectedCategories = [String]()
-        for (row, isSelected) in switchStates{
-            if isSelected{
-                selectedCategories.append(categories[row]["code"]!)
+        
+        // update categories
+        if let switchCategories = switchStates[categorySectionIndex]{
+            for (row, isSelected) in switchCategories{
+                if isSelected{
+                    selectedCategories.append(categories[row]["code"]!)
+                }
             }
         }
         // send back selected categories if count > 0
         if selectedCategories.count > 0{
-            filters["categories"] = selectedCategories as AnyObject?
+            filters[FilterType.category.rawValue] = selectedCategories as AnyObject?
         }
+        if sortByFilter != nil{
+            filters[FilterType.sortBy.rawValue] = sortByFilter!.rawValue as AnyObject?
+        }
+        if distanceFilter != nil{
+            filters[FilterType.distance.rawValue] = distanceFilter!.getValue as AnyObject?
+        }
+        filters[FilterType.deals.rawValue] = hasDeals as AnyObject?
+        
         delegate?.filtersViewController?(filtersViewController: self, didUpdateFilters: filters)
         dismiss(animated: true, completion: nil)
     }
 
     // MARK: table view methods
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sectionType.count // 4 sections for deals, Distance, sortBy and category
     }
     
-
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if sectionType[section] == FilterType.deals{
+            return nil
+        }else{
+            return sectionType[section].rawValue
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section < sectionType.count {
+            if sectionType[section] == FilterType.category{
+                // special case categories -> list all categories
+                return categories.count
+            }else{
+                return tableStructure[section].count
+            }
+        }else{
+            return 0
+        }
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
-        cell.switchLabel.text = categories[indexPath.row]["name"]
-        cell.delegate = self
         
-        cell.onSwitch.setOn(switchStates[indexPath.row] ?? false, animated: false)
+        if sectionType[indexPath.section] == FilterType.category{
+            cell.filterType = FilterType.category
+            cell.switchLabel.text = categories[indexPath.row]["name"]
+            cell.onSwitch.setOn(switchStates[indexPath.section]?[indexPath.row] ?? false, animated: false)
+        }else if sectionType[indexPath.section] == FilterType.sortBy{
+            if let sortEnum = FiltersSortEnum(rawValue: tableStructure[indexPath.section][indexPath.row]) {
+                cell.filterType = FilterType.sortBy
+                cell.switchLabel.text = sortEnum.title
+                cell.switchValue = sortEnum.rawValue
+                cell.onSwitch.setOn(switchStates[indexPath.section]?[indexPath.row] ?? false, animated: false)
+            }
+        }else if sectionType[indexPath.section] == FilterType.distance{
+            if let distanceEnum = FiltersDistanceEnum(rawValue: tableStructure[indexPath.section][indexPath.row]) {
+                cell.filterType = FilterType.distance
+                cell.switchLabel.text = distanceEnum.title
+                cell.switchValue = distanceEnum.rawValue
+                cell.onSwitch.setOn(switchStates[indexPath.section]?[indexPath.row] ?? false, animated: false)
+            }
+        }else if sectionType[indexPath.section] == FilterType.deals{
+            cell.filterType = FilterType.deals
+            cell.switchLabel.text = "Offering a Deal"
+            cell.switchValue = nil
+            cell.onSwitch.setOn(hasDeals, animated: false)
+        }
+        
+        cell.delegate = self
         
         return cell
     }
@@ -80,7 +162,44 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
     // MARK: SwitchCell delegate
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         if let indexPath = self.tableView.indexPath(for: switchCell){
-            switchStates[indexPath.row] = value
+            if switchCell.filterType == FilterType.distance{
+                // turn off all other distance switches
+                turnOffAllCellsBySection(indexPath.section)
+                if switchCell.switchValue != nil && switchCell.switchValue! > 0 {
+                    // distance 0 means auto
+                    distanceFilter = FiltersDistanceEnum(rawValue: switchCell.switchValue!)
+                }
+                switchStates[indexPath.section]?[indexPath.row] = value
+                self.tableView.reloadData()
+                
+            } else if switchCell.filterType == FilterType.sortBy{
+                // turn off all other sortBy switches
+                turnOffAllCellsBySection(indexPath.section)
+                sortByFilter = FiltersSortEnum(rawValue: switchCell.switchValue!)
+                switchStates[indexPath.section]?[indexPath.row] = value
+                self.tableView.reloadData()
+                
+            } else if switchCell.filterType == FilterType.deals {
+                hasDeals = value
+            }else{
+                switchStates[indexPath.section]?[indexPath.row] = value
+            }
+        }
+    }
+    
+    // turn off all cells in a section
+    func turnOffAllCellsBySection(_ section:Int){
+        if let switchStatesSection = switchStates[section] {
+            for (index,_) in switchStatesSection{
+                switchStates[section]?[index] = false
+            }
+        }
+    }
+    
+    // initialize switch states
+    func initializeSwitchStates(){
+        for (index,_) in sectionType.enumerated(){
+            switchStates[index] = [Int:Bool]()
         }
     }
     
@@ -258,6 +377,48 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
         return categories
     }
     
+    func loadPrevSettings(){
+        // preload distance
+        if let distance = prevSettings?.distance {
+            self.distanceFilter = FiltersDistanceEnum.getFilterDistanceEnumByDouble(value: distance)
+            if let index = self.distanceFilter?.rawValue{
+                self.switchStates[distanceSectionIndex]?[index] = true
+            }
+        }
+        
+        // preload sort
+        if let sortBy = prevSettings?.sortBy {
+            self.sortByFilter = FiltersSortEnum(rawValue: sortBy)
+            self.switchStates[sortBySectionIndex]?[sortBy] = true
+        }
+        
+        if let isOfferingADeal = prevSettings?.isOfferingADeal{
+            self.hasDeals = isOfferingADeal
+        }
+        
+        if prevSettings?.categories != nil && (prevSettings?.categories.count)! > 0{
+            // load category dictionary for parsing
+            var categoryDict = [String:Int]()
+            for (index, categoryObj) in self.categories.enumerated(){
+                let code:String = categoryObj["code"]!
+                categoryDict[code] = index
+            }
+            
+            for category in (self.prevSettings?.categories)! {
+                if categoryDict[category] != nil{
+                    let index:Int = categoryDict[category]!
+                    switchStates[categorySectionIndex]?[index] = true
+                }
+//                for (index, stringDict) in self.categories.enumerated(){
+//                    if category == stringDict["code"]{
+//                        switchStates[categorySectionIndex]?[index] = true
+//                        break
+//                    }
+//                }
+            }
+        }
+        
+    }
     /*
     // MARK: - Navigation
 

@@ -17,6 +17,10 @@ class SwitchCell: UITableViewCell {
     @IBOutlet weak var switchLabel: UILabel!
     @IBOutlet weak var onSwitch: UISwitch!
     
+    var filterType: FilterType?
+    var switchValue: Int? // denotes value of enum (if switch represents distance, then auto, 1,5, 20)
+                        // for sortBby {BestMatched, distance, Highest Rated}
+    
     weak var delegate: SwitchCellDelegate?
     
     override func awakeFromNib() {

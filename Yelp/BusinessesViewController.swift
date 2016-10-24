@@ -8,9 +8,11 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FiltersViewControllerDelegate {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FiltersViewControllerDelegate, UISearchBarDelegate {
     
+    var searchBar: UISearchBar!
     var businesses: [Business]!
+    var searchSettings: SearchFilterSettings = SearchFilterSettings()
     
     @IBOutlet weak var tableView: UITableView!
 
@@ -19,6 +21,15 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // implement searchbar
+        self.searchBar = UISearchBar()
+        // Initialize the UISearchBar
+        self.searchBar.delegate = self
+        
+        // Add SearchBar to the NavigationBar
+        self.searchBar.sizeToFit()
+        self.navigationItem.titleView = searchBar
+        
         // set filter button color
         filterButton.customView?.layer.borderColor = UIColor.white.cgColor
         filterButton.customView?.layer.borderWidth = 1.0
@@ -29,20 +40,25 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
         
-        Business.searchWithTerm(term: "Thai", completion: { (businesses: [Business]?, error: Error?) -> Void in
-            
-            self.businesses = businesses
-            self.tableView.reloadData()
-            
-            if let businesses = businesses {
-                for business in businesses {
-                    print(business.name!)
-                    print(business.address!)
-                }
-            }
-            
-            }
-        )
+        self.searchSettings.searchText = "restaurant"
+        self.searchSettings.distance = 0 //auto
+        self.searchSettings.sortBy = 0 // auto
+        doSearchBySettings()
+        
+//        Business.searchWithTerm(term: "", completion: { (businesses: [Business]?, error: Error?) -> Void in
+//            
+//            self.businesses = businesses
+//            self.tableView.reloadData()
+//            
+//            if let businesses = businesses {
+//                for business in businesses {
+//                    print(business.name!)
+//                    print(business.address!)
+//                }
+//            }
+//            
+//            }
+//        )
         
         /* Example of Yelp search with more search options specified
          Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
@@ -87,6 +103,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             if let navigationVC = segue.destination as? UINavigationController{
                 if let filtersVC = navigationVC.topViewController as? FiltersViewController{
                     filtersVC.delegate = self
+                    filtersVC.prevSettings = self.searchSettings
                 }
                 
             }
@@ -96,8 +113,59 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK: FiltersViewControllerDelegate methods
     
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
-        let categories = filters["categories"] as? [String]
-        Business.searchWithTerm(term: "Restaurant", sort: nil, categories: categories, deals: nil){
+        for (key, value) in filters{
+            if key == FilterType.category.rawValue{
+                if let categories = value as? [String] {
+                    self.searchSettings.categories = categories
+                }
+            }else if key == FilterType.sortBy.rawValue{
+                if let sortBy = value as? Int {
+                    self.searchSettings.sortBy = sortBy
+                }
+            }else if key == FilterType.distance.rawValue{
+                if let distance = value as? Double {
+                    self.searchSettings.distance = distance
+                }
+            }else if key == FilterType.deals.rawValue{
+                if let hasDeals = value as? Bool{
+                    self.searchSettings.isOfferingADeal = hasDeals
+                }
+            }
+        }
+        doSearchBySettings()
+    }
+    
+    // MARK: Search bar methods
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchSettings.searchText = searchBar.text
+        doSearchBySettings()
+        self.searchBar.resignFirstResponder()
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        self.searchBar.showsCancelButton = true
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.searchBar.showsCancelButton = false
+        self.searchBar.text = ""
+        doSearchBySettings()
+        self.searchBar.resignFirstResponder()
+    }
+    
+    func doSearchBySettings(){
+        var sortByYelp:YelpSortMode? = nil
+        var distanceInMeters: Double? = nil
+        if let sortBy = self.searchSettings.sortBy{
+            sortByYelp = YelpSortMode(rawValue: sortBy)
+        }
+        if let miles = self.searchSettings.distance{
+            if miles > 0{ // leave 0 miles as auto
+                let result:Double = miles * 1609.34
+                distanceInMeters = result
+            }
+        }
+        Business.searchWithTerm(term: (self.searchSettings.searchText)!, sort: sortByYelp, categories: self.searchSettings.categories, distance: distanceInMeters, deals: self.searchSettings.isOfferingADeal){
             (businesses: [Business]?, error:Error?)->Void in
             self.businesses = businesses
             self.tableView.reloadData()

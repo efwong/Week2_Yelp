@@ -7,7 +7,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Yelp-->
+        <!--Businesses View Controller-->
         <scene sceneID="5L9-Uz-lNK">
             <objects>
                 <viewController automaticallyAdjustsScrollViewInsets="NO" id="2xI-yr-O5N" customClass="BusinessesViewController" customModule="Yelp" customModuleProvider="target" sceneMemberID="viewController">
@@ -26,7 +26,7 @@
                                         <rect key="frame" x="0.0" y="28" width="414" height="140"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="L7N-19-5RI" id="DUj-Uu-DYk">
-                                            <frame key="frameInset" width="414" height="139.5"/>
+                                            <frame key="frameInset" width="414" height="139"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="caA-K4-M4I">
@@ -117,7 +117,7 @@
                             <constraint firstItem="1YL-kR-nEg" firstAttribute="top" secondItem="hR0-74-jRp" secondAttribute="bottom" id="zc1-Eg-Dbz"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Yelp" id="hdc-4n-Ec2">
+                    <navigationItem key="navigationItem" id="hdc-4n-Ec2">
                         <barButtonItem key="leftBarButtonItem" title="Filters" id="ASx-VK-TzM">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
@@ -149,11 +149,11 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="51" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="xhI-3r-ffg">
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchCell" rowHeight="51" id="pOx-0w-JNe" customClass="SwitchCell" customModule="Yelp" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="SwitchCell" rowHeight="51" id="pOx-0w-JNe" customClass="SwitchCell" customModule="Yelp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="51"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pOx-0w-JNe" id="QtO-RP-Sk4">
-                                            <frame key="frameInset" width="414" height="50.5"/>
+                                            <frame key="frameInset" width="414" height="50"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QKH-o2-7dN">
@@ -177,24 +177,42 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hZW-Ff-0Qz">
+                                <color key="backgroundColor" red="0.82745098039999998" green="0.13725490200000001" blue="0.13725490200000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="LrG-t1-yef"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="Save Filters"/>
+                                <connections>
+                                    <action selector="onSearchButton:" destination="bdC-iN-sbP" eventType="touchUpInside" id="hBm-et-Dml"/>
+                                </connections>
+                            </button>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="xhI-3r-ffg" firstAttribute="top" secondItem="MBL-Jg-UxR" secondAttribute="bottom" id="3f6-zj-ZVK"/>
+                            <constraint firstAttribute="trailing" secondItem="hZW-Ff-0Qz" secondAttribute="trailing" constant="10" id="Fc2-hV-bAk"/>
+                            <constraint firstItem="hZW-Ff-0Qz" firstAttribute="leading" secondItem="FOq-NF-Wbh" secondAttribute="leading" constant="10" id="IF7-ra-GIj"/>
                             <constraint firstItem="xhI-3r-ffg" firstAttribute="leading" secondItem="FOq-NF-Wbh" secondAttribute="leading" id="J5i-7x-Bsr"/>
                             <constraint firstAttribute="trailing" secondItem="xhI-3r-ffg" secondAttribute="trailing" id="Leb-cC-pla"/>
-                            <constraint firstItem="zaI-jH-Zgg" firstAttribute="top" secondItem="xhI-3r-ffg" secondAttribute="bottom" id="Ocf-SY-zel"/>
+                            <constraint firstItem="zaI-jH-Zgg" firstAttribute="top" secondItem="hZW-Ff-0Qz" secondAttribute="bottom" constant="10" id="S4k-St-8zj"/>
+                            <constraint firstItem="hZW-Ff-0Qz" firstAttribute="top" secondItem="xhI-3r-ffg" secondAttribute="bottom" constant="5" id="dYx-KY-GBZ"/>
+                            <constraint firstItem="hZW-Ff-0Qz" firstAttribute="centerX" secondItem="FOq-NF-Wbh" secondAttribute="centerX" id="rK8-JL-Ezb"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="YEV-Jw-8bq">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="sfh-ar-E02">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <action selector="onCancelButton:" destination="bdC-iN-sbP" id="4Kw-33-gWF"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Search" id="i8e-50-hhq">
+                        <barButtonItem key="rightBarButtonItem" title="Reset" id="i8e-50-hhq">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
-                                <action selector="onSearchButton:" destination="bdC-iN-sbP" id="5W8-iO-iEC"/>
+                                <action selector="onClearButton:" destination="bdC-iN-sbP" id="o9N-CW-KsP"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
