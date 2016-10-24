@@ -83,10 +83,9 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
                 }
             }
         }
-        // send back selected categories if count > 0
-        if selectedCategories.count > 0{
-            filters[FilterType.category.rawValue] = selectedCategories as AnyObject?
-        }
+        // send back selected categories
+        filters[FilterType.category.rawValue] = selectedCategories as AnyObject?
+        
         if sortByFilter != nil{
             filters[FilterType.sortBy.rawValue] = sortByFilter!.rawValue as AnyObject?
         }

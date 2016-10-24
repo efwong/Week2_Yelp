@@ -40,7 +40,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
         
-        self.searchSettings.searchText = "restaurant"
+        self.searchSettings.searchText = ""
         self.searchSettings.distance = 0 //auto
         self.searchSettings.sortBy = 0 // auto
         doSearchBySettings()
@@ -149,6 +149,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         self.searchBar.showsCancelButton = false
         self.searchBar.text = ""
+        self.searchSettings.searchText = ""
         doSearchBySettings()
         self.searchBar.resignFirstResponder()
     }

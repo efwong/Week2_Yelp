@@ -44,7 +44,9 @@ Please list two areas of the assignment you'd like to **discuss further with you
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+[YelpGif](http://i.imgur.com/FNzKPLl.gifv)
+
+![Video Walkthrough](yelp.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
@@ -52,7 +54,7 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 Describe any challenges encountered while building the app.
 
-I felt that the Settings View was a challenge to complete.  There were multiple categories so I needed to maaintain a 2d array keeping track of the section (deal,section,distance,category) and the individual row.  I ran into bugs where I was referencing the incorrect section.  When I have time I would like to go back and try to refactor/streamline this section to be more readable and efficient.
+I felt that the Settings View was a challenge to complete.  There were multiple categories so I needed to maaintain a 2d array keeping track of the section (deal,section,distance,category) and the individual row.  I ran into bugs where I was referencing the incorrect section.  When I have time I would like to go back and try to refactor/streamline this section to be more readable and efficient.  
 
 ## License
 
