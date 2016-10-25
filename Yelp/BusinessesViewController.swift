@@ -8,16 +8,20 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FiltersViewControllerDelegate, UISearchBarDelegate {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FiltersViewControllerDelegate, UISearchBarDelegate,UIScrollViewDelegate {
     
     var searchBar: UISearchBar!
     var businesses: [Business]!
     var searchSettings: SearchFilterSettings = SearchFilterSettings()
+    var currentPage: Int = 1
+    var businessCountIncrement:Int = 20 // how many businesses to fetch each time
+    var totalBusinessCount: Int = 10
     
     @IBOutlet weak var tableView: UITableView!
-
-    
     @IBOutlet weak var filterButton: UIBarButtonItem!
+    
+    // Keep track of data loading for infinite scroll
+    var isMoreDataLoading = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,34 +46,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         self.searchSettings.searchText = ""
         self.searchSettings.distance = 0 //auto
-        self.searchSettings.sortBy = 0 // auto
-        doSearchBySettings()
-        
-//        Business.searchWithTerm(term: "", completion: { (businesses: [Business]?, error: Error?) -> Void in
-//            
-//            self.businesses = businesses
-//            self.tableView.reloadData()
-//            
-//            if let businesses = businesses {
-//                for business in businesses {
-//                    print(business.name!)
-//                    print(business.address!)
-//                }
-//            }
-//            
-//            }
-//        )
-        
-        /* Example of Yelp search with more search options specified
-         Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
-         self.businesses = businesses
-         
-         for business in businesses {
-         print(business.name!)
-         print(business.address!)
-         }
-         }
-         */
+        self.searchSettings.sortBy = 0 // Best Matched
+        doSearchBySettings(page: 1)
         
     }
     
@@ -132,13 +110,13 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
             }
         }
-        doSearchBySettings()
+        doSearchBySettings(page: 1)
     }
     
     // MARK: Search bar methods
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchSettings.searchText = searchBar.text
-        doSearchBySettings()
+        doSearchBySettings(page: 1) // reset search to page 1
         self.searchBar.resignFirstResponder()
     }
     
@@ -150,11 +128,13 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.searchBar.showsCancelButton = false
         self.searchBar.text = ""
         self.searchSettings.searchText = ""
-        doSearchBySettings()
+        doSearchBySettings(page: 1) // reset search to page 1
         self.searchBar.resignFirstResponder()
     }
     
-    func doSearchBySettings(){
+    // Page == 1 signifies resetting paging
+    // Will save self.currentPage =1
+    func doSearchBySettings(page:Int){
         var sortByYelp:YelpSortMode? = nil
         var distanceInMeters: Double? = nil
         if let sortBy = self.searchSettings.sortBy{
@@ -166,10 +146,47 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                 distanceInMeters = result
             }
         }
-        Business.searchWithTerm(term: (self.searchSettings.searchText)!, sort: sortByYelp, categories: self.searchSettings.categories, distance: distanceInMeters, deals: self.searchSettings.isOfferingADeal){
-            (businesses: [Business]?, error:Error?)->Void in
-            self.businesses = businesses
-            self.tableView.reloadData()
+        let offset = getOffset(page: page)
+        // only fetch more when the page's offset is less than the total # of businesses or if doReset is true
+        if offset < self.totalBusinessCount || page == 1 {
+            Business.searchWithTerm(term: (self.searchSettings.searchText)!, sort: sortByYelp, categories: self.searchSettings.categories, distance: distanceInMeters, deals: self.searchSettings.isOfferingADeal, limit: self.businessCountIncrement, offset: offset){
+                (businesses: [Business]?, total: Int, error:Error?)->Void in
+                if page <= 1{
+                    self.businesses = businesses
+                }else{
+                    if let bussinessArr = businesses{
+                        self.businesses?.append(contentsOf: bussinessArr)
+                    }
+                }
+                self.totalBusinessCount = total
+                self.currentPage = page
+                self.isMoreDataLoading = false
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
+    // Get # of businesses up to current page
+    // eg. page 1-> 0, page 2-> 20
+    func getOffset(page: Int) -> Int{
+        return (page-1)*self.businessCountIncrement
+    }
+    
+    // MARK: Infinite Scroll
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if (!isMoreDataLoading) {
+            // Calculate the position of one screen length before the bottom of the results
+            let scrollViewContentHeight = tableView.contentSize.height
+            let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
+            
+            // When the user has scrolled past the threshold, start requesting
+            if(scrollView.contentOffset.y > scrollOffsetThreshold && tableView.isDragging) {
+                
+                isMoreDataLoading = true
+                
+                // Code to load more results
+                doSearchBySettings(page: self.currentPage+1)
+            }
         }
     }
 }

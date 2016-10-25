@@ -43,11 +43,11 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         self.requestSerializer.saveAccessToken(token)
     }
     
-    func searchWithTerm(_ term: String, completion: @escaping ([Business]?, Error?) -> Void) -> AFHTTPRequestOperation {
-        return searchWithTerm(term, sort: nil, categories: nil, distance: nil, deals: nil, completion: completion)
+    func searchWithTerm(_ term: String, completion: @escaping ([Business]?, Int, Error?) -> Void) -> AFHTTPRequestOperation {
+        return searchWithTerm(term, sort: nil, categories: nil, distance: nil, deals: nil, limit: nil, offset: nil, completion: completion)
     }
     
-    func searchWithTerm(_ term: String, sort: YelpSortMode?, categories: [String]?, distance: Double?, deals: Bool?, completion: @escaping ([Business]?, Error?) -> Void) -> AFHTTPRequestOperation {
+    func searchWithTerm(_ term: String, sort: YelpSortMode?, categories: [String]?, distance: Double?, deals: Bool?, limit: Int?, offset: Int?, completion: @escaping ([Business]?, Int, Error?) -> Void) -> AFHTTPRequestOperation {
         // For additional parameters, see http://www.yelp.com/developers/documentation/v2/search_api
         
         // Default the location to San Francisco
@@ -69,19 +69,32 @@ class YelpClient: BDBOAuth1RequestOperationManager {
             parameters["deals_filter"] = deals! as AnyObject?
         }
         
+        if limit != nil{
+            parameters["limit"] = limit! as AnyObject?
+        }
+        
+        if offset != nil{
+            parameters["offset"] = offset! as AnyObject?
+        }
+        
         print(parameters)
         
         return self.get("search", parameters: parameters,
                         success: { (operation: AFHTTPRequestOperation, response: Any) -> Void in
                             if let response = response as? [String: Any]{
+                                var totalBusinesses:Int = 0
+                                if let total = response["total"] as? Int{
+                                    totalBusinesses = total
+                                }
+                                
                                 let dictionaries = response["businesses"] as? [NSDictionary]
                                 if dictionaries != nil {
-                                    completion(Business.businesses(array: dictionaries!), nil)
+                                    completion(Business.businesses(array: dictionaries!), totalBusinesses, nil)
                                 }
                             }
                         },
                         failure: { (operation: AFHTTPRequestOperation?, error: Error) -> Void in
-                            completion(nil, error)
+                            completion(nil, 0, error)
                         })!
     }
 }
