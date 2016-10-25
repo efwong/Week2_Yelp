@@ -52,11 +52,6 @@
                                                     <color key="textColor" red="0.6081123737373737" green="0.6081123737373737" blue="0.6081123737373737" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$$" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cqH-Q4-i9A">
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <color key="textColor" red="0.6081123737373737" green="0.6081123737373737" blue="0.6081123737373737" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="469 reviews" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L2j-ic-Qag">
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" red="0.6081123737373737" green="0.6081123737373737" blue="0.6081123737373737" alpha="1" colorSpace="calibratedRGB"/>
@@ -74,14 +69,12 @@
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="cqH-Q4-i9A" secondAttribute="trailing" constant="5" id="4h0-39-5RT"/>
                                                 <constraint firstItem="caA-K4-M4I" firstAttribute="leading" secondItem="DUj-Uu-DYk" secondAttribute="leading" constant="8" id="7Hs-NL-zCB"/>
                                                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="TBA-Li-RW6" secondAttribute="bottom" constant="5" id="8Xj-95-aOX"/>
                                                 <constraint firstItem="3WH-hP-MuR" firstAttribute="top" secondItem="iCt-z6-gTY" secondAttribute="bottom" constant="6" id="BX4-t8-Ftg"/>
                                                 <constraint firstItem="740-R0-m0n" firstAttribute="leading" secondItem="sqY-O5-5AM" secondAttribute="trailing" constant="8" id="CTk-j1-y45"/>
                                                 <constraint firstItem="TBA-Li-RW6" firstAttribute="top" secondItem="3WH-hP-MuR" secondAttribute="bottom" constant="5" id="DR8-Xc-eCB"/>
                                                 <constraint firstItem="740-R0-m0n" firstAttribute="top" secondItem="DUj-Uu-DYk" secondAttribute="top" constant="7" id="GE2-Zp-5zP"/>
-                                                <constraint firstItem="cqH-Q4-i9A" firstAttribute="bottom" secondItem="iCt-z6-gTY" secondAttribute="bottom" id="MJa-Am-Sve"/>
                                                 <constraint firstItem="iCt-z6-gTY" firstAttribute="top" secondItem="sqY-O5-5AM" secondAttribute="bottom" constant="5" id="Nzf-af-WHN"/>
                                                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="caA-K4-M4I" secondAttribute="bottom" constant="12" id="OEy-Ai-8DV"/>
                                                 <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="TBA-Li-RW6" secondAttribute="trailing" constant="5" id="TDa-xW-Qc9"/>
@@ -101,7 +94,6 @@
                                             <outlet property="addressLabel" destination="3WH-hP-MuR" id="IfS-U9-HJ3"/>
                                             <outlet property="categoriesLabel" destination="TBA-Li-RW6" id="fNe-u2-oJe"/>
                                             <outlet property="distanceLabel" destination="740-R0-m0n" id="eif-yA-SJ9"/>
-                                            <outlet property="moneyLabel" destination="cqH-Q4-i9A" id="gVp-41-s3O"/>
                                             <outlet property="nameLabel" destination="sqY-O5-5AM" id="SWw-rz-HMJ"/>
                                             <outlet property="ratingImageVIew" destination="iCt-z6-gTY" id="gag-Ys-nQF"/>
                                             <outlet property="reviewsCountLabel" destination="L2j-ic-Qag" id="1wQ-KK-xR2"/>
@@ -287,11 +279,6 @@
                                         <color key="textColor" red="0.60811237370000004" green="0.60811237370000004" blue="0.60811237370000004" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$$" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nF5-ah-Udz">
-                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                        <color key="textColor" red="0.60811237370000004" green="0.60811237370000004" blue="0.60811237370000004" alpha="1" colorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hGc-6i-0JT">
                                         <constraints>
                                             <constraint firstAttribute="height" constant="20" id="vWO-sS-4iC"/>
@@ -312,8 +299,6 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="FDP-Ay-6Zx" firstAttribute="top" secondItem="BQ6-du-MN9" secondAttribute="top" constant="5" id="0fx-Oh-DuW"/>
-                                    <constraint firstItem="nF5-ah-Udz" firstAttribute="centerY" secondItem="hGc-6i-0JT" secondAttribute="centerY" id="5LX-l0-X0B"/>
-                                    <constraint firstAttribute="trailing" secondItem="nF5-ah-Udz" secondAttribute="trailing" constant="5" id="F1L-YP-Xgm"/>
                                     <constraint firstAttribute="trailing" secondItem="FDP-Ay-6Zx" secondAttribute="trailing" constant="5" id="Hgz-8x-D3j"/>
                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="n6U-bn-9kU" secondAttribute="trailing" constant="10" id="IQZ-BK-Mhf"/>
                                     <constraint firstItem="TYw-dL-0YC" firstAttribute="leading" secondItem="BQ6-du-MN9" secondAttribute="leading" constant="5" id="Ig4-cI-Xx0"/>
@@ -370,7 +355,6 @@
                         <outlet property="categoriesLabel" destination="n6U-bn-9kU" id="TYF-Wa-Yui"/>
                         <outlet property="distanceLabel" destination="FDP-Ay-6Zx" id="j5J-A6-ACg"/>
                         <outlet property="mapView" destination="8GS-CH-Pcc" id="Qpj-vQ-p8l"/>
-                        <outlet property="moneyLabel" destination="nF5-ah-Udz" id="TEf-7I-maD"/>
                         <outlet property="nameLabel" destination="TYw-dL-0YC" id="6SL-Jx-2i8"/>
                         <outlet property="phoneNumberButton" destination="ESm-ai-xJQ" id="tjh-1P-Ucm"/>
                         <outlet property="ratingImageView" destination="hGc-6i-0JT" id="NKp-tp-u5B"/>

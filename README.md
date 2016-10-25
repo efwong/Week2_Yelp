@@ -44,7 +44,7 @@ Please list two areas of the assignment you'd like to **discuss further with you
 
 Here's a walkthrough of implemented user stories:
 
-[YelpGif](http://i.imgur.com/FNzKPLl.gifv)
+[YelpGif](http://i.imgur.com/F4irwdW.gifv)
 
 ![Video Walkthrough](yelp.gif)
 

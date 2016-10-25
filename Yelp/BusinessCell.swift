@@ -15,7 +15,6 @@ class BusinessCell: UITableViewCell {
     @IBOutlet weak var addressLabel: UILabel!
     @IBOutlet weak var reviewsCountLabel: UILabel!
     @IBOutlet weak var ratingImageVIew: UIImageView!
-    @IBOutlet weak var moneyLabel: UILabel!
     @IBOutlet weak var distanceLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
     

@@ -15,7 +15,6 @@ class BusinessDetailViewController: UIViewController {
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var distanceLabel: UILabel!
-    @IBOutlet weak var moneyLabel: UILabel!
     @IBOutlet weak var ratingImageView: UIImageView!
     @IBOutlet weak var reviewsCountLabel: UILabel!
     @IBOutlet weak var categoriesLabel: UILabel!
