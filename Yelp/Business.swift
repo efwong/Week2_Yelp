@@ -16,6 +16,10 @@ class Business: NSObject {
     let distance: String?
     let ratingImageURL: URL?
     let reviewCount: NSNumber?
+    var latitude: Double?
+    var longitude: Double?
+    var phoneNumber: String?
+    var websiteURLString: String?
     
     init(dictionary: NSDictionary) {
         name = dictionary["name"] as? String
@@ -42,7 +46,18 @@ class Business: NSObject {
                 }
                 address += neighborhoods![0] as! String
             }
+            
+            if let coordinate = location!["coordinate"] as? NSDictionary{
+                if let coordLatitude = coordinate["latitude"] as? Double{
+                    latitude = coordLatitude
+                }
+                if let coordLongitude = coordinate["longitude"] as? Double{
+                    longitude = coordLongitude
+                }
+            }
         }
+        self.phoneNumber = dictionary["phone"] as? String
+        self.websiteURLString = dictionary["url"] as? String
         self.address = address
         
         let categoriesArray = dictionary["categories"] as? [[String]]

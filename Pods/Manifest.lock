@@ -23,15 +23,18 @@ PODS:
   - BDBOAuth1Manager (1.6.0):
     - AFNetworking/NSURLConnection (~> 2.6.0)
     - AFNetworking/NSURLSession (~> 2.6.0)
+  - NVActivityIndicatorView (3.0)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
   - BDBOAuth1Manager
+  - NVActivityIndicatorView (~> 3.0)
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   BDBOAuth1Manager: cd5a5872f355ca38180d52ca2dd844f0b0c84797
+  NVActivityIndicatorView: 81953b5e65093ba79edf4fe7268e002039ca5268
 
-PODFILE CHECKSUM: 7cad76b9b34667033c164b7299943d9dabfaeff4
+PODFILE CHECKSUM: d76e946fef8e1ac4bf72aaf5aa311f3ab1cfa4bb
 
 COCOAPODS: 1.0.1

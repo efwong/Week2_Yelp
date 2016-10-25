@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import NVActivityIndicatorView
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FiltersViewControllerDelegate, UISearchBarDelegate,UIScrollViewDelegate {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FiltersViewControllerDelegate, UISearchBarDelegate,UIScrollViewDelegate, NVActivityIndicatorViewable {
     
     var searchBar: UISearchBar!
     var businesses: [Business]!
@@ -16,6 +17,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     var currentPage: Int = 1
     var businessCountIncrement:Int = 20 // how many businesses to fetch each time
     var totalBusinessCount: Int = 10
+    var loadingView: NVActivityIndicatorView?
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var filterButton: UIBarButtonItem!
@@ -49,6 +51,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.searchSettings.sortBy = 0 // Best Matched
         doSearchBySettings(page: 1)
         
+        // add footer to table view for infinite scroll
+        self.loadingView = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50), type: NVActivityIndicatorType.ballPulse, color: Helper.globalRed)
+        self.tableView.tableFooterView = loadingView
     }
     
     override func didReceiveMemoryWarning() {
@@ -84,6 +89,13 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                     filtersVC.prevSettings = self.searchSettings
                 }
                 
+            }
+        }else if segue.identifier == "toBusinessDetail"{
+            // triggered by tapping business cell
+            if let businessCell = sender as? BusinessCell{
+                if let detailsVC = segue.destination as? BusinessDetailViewController{
+                    detailsVC.business = businessCell.business
+                }
             }
         }
     }
@@ -149,18 +161,28 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         let offset = getOffset(page: page)
         // only fetch more when the page's offset is less than the total # of businesses or if doReset is true
         if offset < self.totalBusinessCount || page == 1 {
+            if page > 1{
+                // only show scrolling loading animation on > first page
+                self.loadingView?.startAnimating()
+            }else{
+                self.showUILoadingBlocker() // show ui blocker
+            }
             Business.searchWithTerm(term: (self.searchSettings.searchText)!, sort: sortByYelp, categories: self.searchSettings.categories, distance: distanceInMeters, deals: self.searchSettings.isOfferingADeal, limit: self.businessCountIncrement, offset: offset){
                 (businesses: [Business]?, total: Int, error:Error?)->Void in
                 if page <= 1{
                     self.businesses = businesses
+                    self.stopAnimating() // hide ui blocker
                 }else{
                     if let bussinessArr = businesses{
                         self.businesses?.append(contentsOf: bussinessArr)
                     }
+                    // only show scrolling loading animation on > first page
+                    self.loadingView?.stopAnimating()
                 }
                 self.totalBusinessCount = total
                 self.currentPage = page
                 self.isMoreDataLoading = false
+                
                 self.tableView.reloadData()
             }
         }
@@ -188,5 +210,11 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                 doSearchBySettings(page: self.currentPage+1)
             }
         }
+    }
+    
+    // MARK: UI BLOCKER
+    // Show UIBlocker when waiting for network
+    func showUILoadingBlocker(){
+        self.startAnimating(CGSize(width: 100, height: 100), message: nil, type: NVActivityIndicatorType.ballRotateChase, color: UIColor.white, minimumDisplayTime: 500)
     }
 }

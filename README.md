@@ -21,17 +21,17 @@ The following **required** functionality is completed:
 
 The following **optional** features are implemented:
 
-- [ ] Search results page
-   - [ ] Infinite scroll for restaurant results.
+- [] Search results page
+   - [x] Infinite scroll for restaurant results.
    - [ ] Implement map view of restaurant results.
 - [ ] Filter page
    - [ ] Implement a custom switch instead of the default UISwitch.
    - [ ] Distance filter should expand as in the real Yelp app
    - [ ] Categories should show a subset of the full list with a "See All" row to expand. Category list is [here](http://www.yelp.com/developers/documentation/category_list).
-- [ ] Implement the restaurant detail page.
+- [x] Implement the restaurant detail page.
 
 The following **additional** features are implemented:
-
+- [x] Added map view of restaurant result inside restaurant detail page
 - [x] When opening the filters view, the most recent filter will be prepopulated. If no previous filter was used before, it will default to sort: BestMatched, distance: Auto, deals: off, categories: none.  Does not save filters between sessions(open/close app)
 - [x] Added a reset button to clear filters. Will only save the reset, if the save button is clicked
 
