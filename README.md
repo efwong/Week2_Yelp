@@ -21,7 +21,7 @@ The following **required** functionality is completed:
 
 The following **optional** features are implemented:
 
-- [] Search results page
+- [ ] Search results page
    - [x] Infinite scroll for restaurant results.
    - [ ] Implement map view of restaurant results.
 - [ ] Filter page
@@ -36,6 +36,7 @@ The following **additional** features are implemented:
 - [x] Added a reset button to clear filters. Will only save the reset, if the save button is clicked
 - [x] Added table view infinite scroll loader and UIBlocker while waiting for API calls
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
+- [x] Added ability to call business phone number in details page, but it does not actually open up the phone number app because it's a simulator
 
 1. How to implement a dropdown using the tableview
 2. Should search filters fire after every keystroke or should we force the user to press enter?
