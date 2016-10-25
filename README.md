@@ -34,7 +34,7 @@ The following **additional** features are implemented:
 - [x] Added map view of restaurant result inside restaurant detail page
 - [x] When opening the filters view, the most recent filter will be prepopulated. If no previous filter was used before, it will default to sort: BestMatched, distance: Auto, deals: off, categories: none.  Does not save filters between sessions(open/close app)
 - [x] Added a reset button to clear filters. Will only save the reset, if the save button is clicked
-
+- [x] Added table view infinite scroll loader and UIBlocker while waiting for API calls
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
 1. How to implement a dropdown using the tableview
@@ -44,7 +44,7 @@ Please list two areas of the assignment you'd like to **discuss further with you
 
 Here's a walkthrough of implemented user stories:
 
-[YelpGif](http://i.imgur.com/F4irwdW.gifv)
+[YelpGif](http://i.imgur.com/tbfbFEt.gifv)
 
 ![Video Walkthrough](yelp.gif)
 
